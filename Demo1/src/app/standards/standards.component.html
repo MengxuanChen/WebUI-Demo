@@ -1,0 +1,91 @@
+<section class="hero is-dark is-bold">
+    <div class="hero-body">
+    <div class="container">  
+      <h1 class="title">Here are the results</h1>  
+    </div>
+    </div>
+    </section>
+    <section class="section">
+    <div class="container">
+    <!--put standard result here-->
+      <div class="card">
+        <div class="card-title">
+          <h2>Your Maxes:</h2>
+        </div>
+        <div class="card-body">
+          <div class="row" style="font-weight: bold;">
+            <div class="col-sm-3">
+              Lift
+            </div>
+            <div class="col-sm-3">
+              Estimated Max
+            </div>
+            <div class="col-sm-3">
+              Percentile
+            </div>
+            <div class="col-sm-3">
+              Ranking
+            </div>
+          </div>
+          <hr/>
+          <div class="row">
+            <div class="col-sm-3">
+              Squat
+            </div>
+            <div class="col-sm-3">
+              {{round5(data.lifter.preferredUnit === lbs ? data.lifter.squat * 2.2 : data.lifter.squat)}}
+            </div>
+            <div class="col-sm-3">
+              50%
+            </div>
+            <div class="col-sm-3">
+              Intermediate
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              Bench
+            </div>
+            <div class="col-sm-3">
+              {{round5(data.lifter.preferredUnit === lbs ? data.lifter.benc * 2.2 : data.lifter.bench)}}
+            </div>
+            <div class="col-sm-3">
+              50%
+            </div>
+            <div class="col-sm-3">
+              Intermediate
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              Deadlift
+            </div>
+            <div class="col-sm-3">
+              {{round5(data.lifter.preferredUnit === lbs ? data.lifter.deadlift * 2.2 : data.lifter.deadlift)}}
+            </div>
+            <div class="col-sm-3">
+              50%
+            </div>
+            <div class="col-sm-3">
+              Intermediate
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-3">
+              Total
+            </div>
+            <div class="col-sm-3">
+              {{round5(data.lifter.preferredUnit === lbs ? this.total * 2.2 : this.total)}}
+            </div>
+            <div class="col-sm-3">
+              50%
+            </div>
+            <div class="col-sm-3">
+              Intermediate
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+{{JSON.stringify(data.lifter)}}

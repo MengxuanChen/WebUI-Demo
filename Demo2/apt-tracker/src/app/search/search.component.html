@@ -1,0 +1,304 @@
+<div class="col-md-8 ml-auto mr-auto ">
+    <p-table #dt [columns]="cols" [value]="apts" [paginator]="true" [rows]="10" selectionMode="single">
+        <ng-template pTemplate="caption">
+            <h3 style="text-align: left;">APT Matrix Search</h3>
+            <div style="text-align: right;">
+                <input type="text" pInputText size="50" placeholder="Global Filter"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:250px;">
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                    {{col.header}}
+                    <input *ngSwitchCase="'name'" pInputText type="text" placeholder="Starts with"
+                        class="ui-column-filter" style="width: 100%;"
+                        (input)="dt.filter($event.target.value, col.field, 'startsWith')">
+                    <input *ngSwitchCase="'type'" pInputText type="text" placeholder="Contains" class="ui-column-filter"
+                        style="width: 100%;" (input)="dt.filter($event.target.value, col.field, 'contains')">
+                    <input *ngSwitchCase="'x_mitre_platforms'" pInputText type="text" placeholder="Contains"
+                        class="ui-column-filter" style="width: 100%;"
+                        (input)="dt.filter($event.target.value, col.field, 'contains')">
+                </th>
+                <th style="width: 10em; text-align: center;">
+                    <span class="pi pi-cog"></span>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData" [pEditableRow]="rowData">
+                <td>{{rowData.name || "-No name Provided"}}</td>
+                <td>{{rowData.type || "-No type Provided"}}</td>
+                <td>{{rowData.x_mitre_platforms?rowData.x_mitre_platforms: "-Not Provided"}}</td>
+                <td style="text-align: center;">
+                    <button type="button" (click)="openRow(rowData)" class="btn btn-primary" style="margin: 2px;">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button type="button" (click)="openEdit(rowData)" class="btn btn-secondary" style="margin: 2px;">
+                        <span class="fa fa-pencil"></span>
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-dialog *ngIf="selectedRow" header="{{selectedRow.name || 'No-Title'}}" [(visible)]="fullScreenMode" [modal]="true"
+    [style]="{width: '90vw'}">
+    <p-scrollPanel [style]="{width: '100%', height: '700px'}">
+
+
+
+        <div *ngIf="selectedRow" class="row" style="text-align: center;">
+            <div class="col-md-3 bg-light   mr-auto   card ">
+                <div class="card-body">
+                    <h5 class="card-title">Id</h5>
+                    <p *ngIf="selectedRow.id" class="card-text">{{selectedRow.id}}</p>
+                </div>
+            </div>
+            <div class="col-md-3 bg-light   ml-auto mr-auto   card">
+                <div class="card-body">
+                    <h5 class="card-title">Type</h5>
+                    <p *ngIf="selectedRow.type" class="card-text">{{selectedRow.type}}</p>
+                </div>
+            </div>
+            <div class="col-md-3 bg-light     card ml-auto ">
+                <div class="card-body">
+                    <h5 class="card-title">Platform</h5>
+                    <p *ngIf="selectedRow.x_mitre_platforms" class="card-text">
+                        {{selectedRow.x_mitre_platforms}}</p>
+                </div>
+            </div>
+            <div class="col-md-3 bg-light     card ml-auto ">
+                <div class="card-body">
+                    <h5 class="card-title">Permissions Required</h5>
+                    <p *ngIf="selectedRow.x_mitre_permissions_required" class="card-text">
+                        {{selectedRow.x_mitre_permissions_required.join(", ")}}</p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div style="text-align: center;" class="row">
+            <div class="col-md-3 bg-light  ">
+                <ng-container *ngIf="selectedRow.kill_chain_phases">
+                    <div class="card-body">
+                        <h5 class="card-title">Chain Phase</h5>
+
+                        <p *ngFor="let chain of selectedRow.kill_chain_phases" class="card-title">{{chain.phase_name}} -
+                            {{chain.kill_chain_name}}</p>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="col-md-3 bg-light     card  ">
+                <div class="card-body">
+                    <h5 class="card-title">Defence Bypassed</h5>
+                    <p *ngIf="selectedRow.x_mitre_defense_bypassed" class="card-text">
+                        {{selectedRow.x_mitre_defense_bypassed.join(", ")}}</p>
+                </div>
+            </div>
+            <div class="col-md-3 bg-light     card  ">
+                <div class="card-body">
+                    <h5 class="card-title">Mitre contributors</h5>
+                    <p [innerHTML]=selectedRow.x_mitre_contributors *ngIf="selectedRow.x_mitre_detection"
+                        class="card-text"></p>
+                </div>
+            </div>
+            <div class="col-md-3 bg-light     card  ">
+                <div class="card-body">
+                    <h5 class="card-title">Data Source</h5>
+                    <p *ngIf="selectedRow.x_mitre_data_sources" class="card-text">
+                        {{selectedRow.x_mitre_data_sources.join(", ")}}</p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div *ngIf="selectedRow.description" class="col-md-12 bg-light card ">
+                <div class="card-body">
+                    <h5 class="card-title">Description</h5>
+                    <p [innerHTML]="selectedRow.description" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div *ngIf="selectedRow.x_mitre_detection" class="col-md-12 bg-light card ">
+                <div class="card-body">
+                    <h5 class="card-title">Mitre Detection</h5>
+                    <p [innerHTML]="selectedRow.x_mitre_detection" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div *ngIf="selectedRow.comment" class="col-md-12 bg-light card ">
+                <div class="card-body">
+                    <h5 class="card-title">Comment</h5>
+                    <p [innerHTML]="selectedRow.comment" class="card-text"></p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div *ngIf="selectedRow.external_references" class="row">
+            <div class="col-md-12">
+                <h3 style="text-align: left;">External References</h3>
+                <div class="col-md-12" style="background-color:lightgray;">
+                    <p-scrollPanel [style]="{width: '100%', height: '200px'}">
+                        <div *ngFor="let ref of selectedRow.external_references">
+                            <br>
+                            <p-card>
+                                <p *ngIf="ref.external_id">Id: {{ref.external_id}}</p>
+                                <p>Source Name: {{ref.source_name}}</p>
+                                <p>URL: <a href="{{ref.url}}">{{ref.url}}</a></p>
+                            </p-card>
+                            <br>
+                        </div>
+                    </p-scrollPanel>
+                </div>
+            </div>
+        </div>
+    </p-scrollPanel>
+
+    <p-footer>
+        <button class="btn btn-success" pButton type="button" (click)="fullScreenMode= false"
+            label="Close">Close</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog *ngIf="editObject" header="{{selectedRow.name || 'No-Title'}}" [(visible)]="editMode" [modal]="true"
+    [style]="{width: '90vw'}">
+    <p-scrollPanel [style]="{width: '100%', height: '700px'}">
+        <br>
+        <div class="row">
+            <div class="col">
+
+                <form [formGroup]="editForm" (submit)="saveRow()">
+                    <div class="row">
+
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="name" id="float-input" type="text" size="30" pInputText>
+                                <label for="float-input">Name</label>
+                            </span><br>
+                        </div>
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="type" id="float-input" type="text" size="30" pInputText>
+                                <label for="float-input">Type</label>
+                            </span><br>
+                        </div>
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="x_mitre_platforms" id="float-input" type="text" size="30"
+                                    pInputText>
+                                <label for="float-input">Platform</label>
+                            </span><br>
+                        </div>
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="x_mitre_permissions_required" id="float-input" type="text"
+                                    size="30" pInputText>
+                                <label for="float-input">Permission</label>
+                            </span><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="kill_chain_name" id="float-input" type="text" size="30"
+                                    pInputText>
+                                <label for="float-input">Chain Name</label>
+                            </span><br>
+                        </div>
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="x_mitre_defense_bypassed" id="float-input" type="text" size="30"
+                                    pInputText>
+                                <label for="float-input">Defense Bypassed</label>
+                            </span><br>
+                        </div>
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="x_mitre_contributors" id="float-input" type="text" size="30"
+                                    pInputText>
+                                <label for="float-input">Contributers</label>
+                            </span><br>
+                        </div>
+                        <div class="col">
+                            <span class="ui-float-label">
+                                <input formControlName="x_mitre_data_sources" id="float-input" type="text" size="30"
+                                    pInputText>
+                                <label for="float-input">Datasources</label>
+                            </span><br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <span class="ui-float-label">
+                                <textarea style="width: 100%;height: 300px;" pInputTextarea formControlName="description"
+                                    id="float-input" size="30"></textarea>
+                                <label for="float-input">Description</label>
+                            </span><br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <span class="ui-float-label">
+                                <textarea style="width: 100%;height: 300px;" pInputTextarea formControlName="x_mitre_detection" id="float-input"
+                                    size="30"></textarea>
+                                <label for="float-input">Detection</label>
+                            </span><br>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <span class="ui-float-label">
+                                <textarea style="width: 100%;height: 300px;" pInputTextarea formControlName="comment"
+                                    id="float-input" size="30"></textarea>
+                                <label for="float-input">Comment</label>
+                            </span><br>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+        </div>
+
+
+
+
+        <br>
+        <div *ngIf="selectedRow.external_references" class="row">
+            <div class="col-md-12">
+                <h3 style="text-align: left;">External References</h3>
+                <div class="col-md-12" style="background-color:lightgray;">
+                    <p-scrollPanel [style]="{width: '100%', height: '200px'}">
+                        <div *ngFor="let ref of selectedRow.external_references">
+                            <br>
+                            <p-card>
+                                <p *ngIf="ref.external_id">Id: {{ref.external_id}}</p>
+                                <p>Source Name: {{ref.source_name}}</p>
+                                <p>URL: <a href="{{ref.url}}">{{ref.url}}</a></p>
+                            </p-card>
+                            <br>
+                        </div>
+                    </p-scrollPanel>
+                </div>
+            </div>
+        </div>
+    </p-scrollPanel>
+
+    <p-footer>
+        <button class="btn btn-danger" pButton type="button" (click)="editMode= false"
+            label="Close">Close</button>
+            <button class="btn btn-success" pButton type="button" (click)="saveRow()"
+            label="Close">Save</button>
+    </p-footer>
+</p-dialog>

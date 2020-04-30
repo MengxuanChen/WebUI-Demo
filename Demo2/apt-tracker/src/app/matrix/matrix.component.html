@@ -1,0 +1,12 @@
+<div class="row border">
+    <div class="col" *ngFor="let apt of map | keyvalue" style="border: 1px sold black;">
+        <div class="border">
+            <h2>{{apt.key}}</h2>
+            <br>
+                <div *ngFor="let name of apt.value">
+                    <p>{{name}}</p>
+                </div>
+        </div>
+
+    </div>
+</div>

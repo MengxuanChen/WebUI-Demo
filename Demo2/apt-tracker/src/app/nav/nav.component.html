@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-md navbar-dark" style="background-color: rgb(5, 7, 5);" >
+    <a class="navbar-brand" routerLink="/home">APT Tracker</a>
+    <button class="navbar-toggler d-lg-none" type="button" (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed" aria-controls="navbarsExampleDefault" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/matrix" > <span class="fa fa-home"></span> Matrix </a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/search" > <span class="fa fa-search-plus"></span> Search</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/create-apt">Create APT</a>
+        </li>
+      </ul>
+    </div>
+  </nav>

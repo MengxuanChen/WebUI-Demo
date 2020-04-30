@@ -1,0 +1,7 @@
+.border {
+    margin-top:10px;
+    border: black medium solid;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}

@@ -1,0 +1,17 @@
+.hero {
+    background-image: url('/assets/barbell.jpg') !important;
+    background-size: cover;
+    background-position: center center;
+  }
+
+.main {
+    padding: 20px;
+    
+    
+}
+
+.card {
+    padding: 20px;
+    white-space: pre;
+    background-color: rgb(230, 230, 230);
+}
